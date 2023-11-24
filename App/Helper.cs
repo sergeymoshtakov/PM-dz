@@ -11,7 +11,15 @@ namespace App
     {
         public String Ellipsis(string input, int len)
         {
-            return input.Substring(0, len-3) + "...";
+            if (input == null) throw new ArgumentNullException("Null detected of parameter: " + nameof(input));
+            if (len < 3)
+            {
+                throw new ArgumentException("Argument 'len' could not be less than 3");
+            }
+            if (input.Length < len) {
+                throw new ArgumentException("Argument 'len' could not be greater than input length");
+            }
+            return input.Substring(0, len - 3) + "...";
         }
 
         public String Finalize(String input)
@@ -21,14 +29,36 @@ namespace App
 
         public string CombineUrl(params String[] patrs)
         {
-            string result = "";
-            int i = 0;
-            while(i < patrs.Length)
+            try
             {
-                result += patrs[i].Replace("/","") == ".." ? "" : "/" + patrs[i].Replace("/", "");
-                i++;
+                string result = "";
+                int i = 0;
+                bool wasNull = false;
+                while (i < patrs.Length)
+                {
+                    if (patrs[i] == null)
+                    {
+                        i++;
+                        wasNull = true;
+                        continue;
+                    }
+                    if (wasNull)
+                    {
+                        throw new ArgumentException("Not null argument after null one");
+                    }
+                    result += patrs[i].Replace("/", "") == ".." ? "" : "/" + patrs[i].Replace("/", "");
+                    i++;
+                }
+                if (result.Length == 0)
+                {
+                    throw new ArgumentException("Arguments are null!");
+                }
+                return result;
             }
-            return result;
+            catch (NullReferenceException)
+            {
+                throw new ArgumentException("Arguments are null!");
+            }
         }
     }
 }

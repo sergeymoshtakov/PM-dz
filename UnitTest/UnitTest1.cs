@@ -20,6 +20,25 @@ namespace UnitTest
                 "Tes...",
                 helper.Ellipsis("Test string", 6));
         }
+
+        [TestMethod]
+        public void ElipsisExcetionTest()
+        {
+            Helper helper = new Helper();
+            var ex = Assert.ThrowsException<ArgumentNullException>(
+                () => helper.Ellipsis(null!, 3)
+                );
+            Assert.IsTrue(ex.Message.Contains("input"),"Exception should contain 'input' substring");
+            var ex1 = Assert.ThrowsException<ArgumentException>(
+                () => helper.Ellipsis("dsdgfsd", 2)
+                );
+            Assert.IsTrue(ex1.Message.Contains("less than 3"), "Exception should contain 'less than 3' substring");
+            var ex2 = Assert.ThrowsException<ArgumentException>(
+                () => helper.Ellipsis("abcd", 6)
+                );
+            Assert.IsTrue(ex2.Message.Contains("greater than input length"), "Exception should contain 'greater than input length' substring");
+        }
+
         [TestMethod]
         public void FinalizeTest()
         {
@@ -84,6 +103,46 @@ namespace UnitTest
                     $"{testCase.Value} -- {testCase.Key[0]} + {testCase.Key[1]}"
                     );
             }
+        }
+
+        [TestMethod]
+        public void CombineUrlExceptionTest()
+        {
+            Helper helper = new Helper();
+            Assert.IsNotNull(
+                () => helper.CombineUrl("/home", null!)
+                );
+            Assert.AreEqual("/home", helper.CombineUrl("home", null!));
+            Assert.AreEqual("/home", helper.CombineUrl("home", null!, null!));
+            Assert.AreEqual("/home", helper.CombineUrl("home", null!, null!, null!));
+            Assert.AreEqual("/section/subsection", helper.CombineUrl("section///", "///subsection//", null!));
+            var ex = Assert.ThrowsException<ArgumentException>(() => helper.CombineUrl(null!, null!));
+            Assert.AreEqual("Arguments are null!", ex.Message);
+            Assert.AreEqual(
+                "Arguments are null!",
+                Assert.ThrowsException<ArgumentException>(() => helper.CombineUrl(null!, null!, null!, null!)).Message);
+            Assert.AreEqual(
+                "Arguments are null!",
+                Assert.ThrowsException<ArgumentException>(() => helper.CombineUrl(null!, null!, null!)).Message);
+            Assert.AreEqual(
+                "Arguments are null!",
+                Assert.ThrowsException<ArgumentException>(() => helper.CombineUrl(null!)).Message);
+            Assert.AreEqual(
+                "Not null argument after null one",
+                Assert.ThrowsException<ArgumentException>(() => helper.CombineUrl(null!, "/subsection")).Message
+                );
+            Assert.AreEqual(
+                "Not null argument after null one",
+                Assert.ThrowsException<ArgumentException>(() => helper.CombineUrl(null!, null!, "/subsection")).Message
+                );
+            Assert.AreEqual(
+                "Not null argument after null one",
+                Assert.ThrowsException<ArgumentException>(() => helper.CombineUrl(null!, "/subsection", null!)).Message
+                );
+            Assert.AreEqual(
+                "Not null argument after null one",
+                Assert.ThrowsException<ArgumentException>(() => helper.CombineUrl("section", null!, "/subsection")).Message
+                );
         }
     }
 }
