@@ -5,6 +5,7 @@ namespace UnitTest
     [TestClass]
     public class HelperTest
     {
+        // general testing of a method Ellipsis()
         [TestMethod]
         public void EllipsisTest()
         {
@@ -20,7 +21,7 @@ namespace UnitTest
                 "Tes...",
                 helper.Ellipsis("Test string", 6));
         }
-
+        // testing exceptions in method Ellipsis
         [TestMethod]
         public void ElipsisExcetionTest()
         {
@@ -38,7 +39,7 @@ namespace UnitTest
                 );
             Assert.IsTrue(ex2.Message.Contains("greater than input length"), "Exception should contain 'greater than input length' substring");
         }
-
+        // testing method Finalize()
         [TestMethod]
         public void FinalizeTest()
         {
@@ -57,7 +58,7 @@ namespace UnitTest
                 "Sprechen Sie Deutsch?.",
                 helper.Finalize("Sprechen Sie Deutsch?"));
         }
-
+        // testing basic cases in method CombineUrl()
         [TestMethod]
         public void CombineUrlTest()
         {
@@ -78,7 +79,7 @@ namespace UnitTest
                     );
             }
         }
-
+        // testing general cases in method CombineUrl()
         [TestMethod]
         public void CombineUrlMultiTest()
         {
@@ -104,7 +105,7 @@ namespace UnitTest
                     );
             }
         }
-
+        // testing Exceptions in method CombineUrl()
         [TestMethod]
         public void CombineUrlExceptionTest()
         {
