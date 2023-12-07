@@ -5,6 +5,72 @@ namespace UnitTest
     [TestClass]
     public class HelperTest
     {
+        [TestMethod] // check function ContainsAttributes() with different cases
+        public void ContainsContainsAttributesTest()
+        {
+            Helper helper = new Helper();
+            Assert.IsNotNull(helper, "new Helper() should not be null");
+            Assert.IsTrue(helper.ContainsAttributes("<div style=\"\"></div>"));
+            Assert.IsTrue(helper.ContainsAttributes("<i style=\"code\" ></div>"));
+            Assert.IsTrue(helper.ContainsAttributes("<i style=\"code\"  required ></div>"));
+            Assert.IsTrue(helper.ContainsAttributes("<i style='code'  required></div>"));
+            Assert.IsTrue(helper.ContainsAttributes("<i required style=\"code\" ></div>"));
+            Assert.IsTrue(helper.ContainsAttributes("<i required style=\"code\"></div>"));
+            Assert.IsTrue(helper.ContainsAttributes("<img onload=\"dangerCode()\" src=\"puc.png\"/>"));
+            Assert.IsTrue(helper.ContainsAttributes("<img  src=\"images/img.png\"/>"));
+            Assert.IsTrue(helper.ContainsAttributes("<img width=100 />"));
+            Assert.IsFalse(helper.ContainsAttributes("<div></div>"));
+            Assert.IsFalse(helper.ContainsAttributes("<div ></div>"));
+            Assert.IsFalse(helper.ContainsAttributes("<br/>"));
+            Assert.IsFalse(helper.ContainsAttributes("<br />"));
+            Assert.IsFalse(helper.ContainsAttributes("<div requred ></div>"));
+            Assert.IsFalse(helper.ContainsAttributes("<div required ></div>"));
+            Assert.IsFalse(helper.ContainsAttributes("<div required></div>"));
+        }
+
+        [TestMethod] // testing function EscapeHtml() with different cases
+        public void TestEscapeHtml()
+        {
+            Helper helper = new Helper();
+            Assert.IsNotNull(helper, "new Helper() should not be null");
+            Dictionary<String, String> testCases = new()
+            {
+                {"<p>Hello World!</p>", "&lt;p&gt;Hello World!&lt;/p&gt;"},
+                {"<img scr='images/image.jpg'>", "&lt;img scr='images/image.jpg'&gt;"},
+            };
+            foreach (var testCase in testCases)
+            {
+                Assert.AreEqual(
+                    testCase.Value,
+                    helper.EscapeHtml(testCase.Key),
+                    $"{testCase.Value} -- {testCase.Key[0]} + {testCase.Key[1]}"
+                    );
+            }
+        }
+
+        [TestMethod] // testing cases where are exception in method EscapeHtml()
+        public void TestEscapeHtmlEx()
+        {
+            Helper helper = new Helper();
+            Assert.IsNotNull(helper, "new Helper() should not be null");
+            var ex = Assert.ThrowsException<ArgumentNullException>(
+                () => helper.EscapeHtml(null!)
+                );
+            Assert.IsTrue(ex.Message.Contains("HTML"), "HTML should not be null");
+            var ex1 = Assert.ThrowsException<ArgumentException>(
+                () => helper.EscapeHtml("<<<<html>ndjngjdn</html>")
+                );
+            Assert.IsTrue(ex1.Message.Contains("correct"), "This should be a correct html file");
+            var ex2 = Assert.ThrowsException<ArgumentException>(
+                () => helper.EscapeHtml("p>dvd<////p>>>>")
+                );
+            Assert.IsTrue(ex2.Message.Contains("correct"), "This should be a correct html file");
+            var ex3 = Assert.ThrowsException<ArgumentException>(
+                () => helper.EscapeHtml("")
+                );
+            Assert.IsTrue(ex3.Message.Contains("empty"), "HTML must not be empty");
+        }
+
         // general testing of a method Ellipsis()
         [TestMethod]
         public void EllipsisTest()
