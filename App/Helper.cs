@@ -11,7 +11,7 @@ namespace App
     public class Helper
     {
         // method that changes <, >, & to &lt;, &gt;, &amp;
-        public String UnitTest(string input, Dictionary<string, string>? map = null)
+        public String EscapeHtml(string input, Dictionary<string, string>? map = null)
         {
             if (input == null) throw new ArgumentNullException("HTML should not be null"); // checks if input is not null
             if (input.Length == 0) // checks in input string is not empty
